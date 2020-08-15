@@ -1,46 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_webpage/LandingPage/LandingPage.dart';
-import 'package:flutter_webpage/Navbar/Navbar.dart';
+import 'package:provider/provider.dart';
+
+import './screens/product_overview_screen.dart';
+import './screens/product_detail_screen.dart';
+import './providers/products.dart';
+import './providers/cart.dart';
+import './screens/cart_screen.dart';
+import './providers/orders.dart';
+import './screens/orders_screen.dart';
+import './screens/admin_screen.dart';
+import './screens/edit_product_screen.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue, fontFamily: "Montserrat"),
-      home: MyHomePage(),
-    );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [
-                Color.fromRGBO(195, 20, 50, 1.0),
-                Color.fromRGBO(36, 11, 54, 1.0)
-              ]),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(
+          value: Products(),
         ),
-        child: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Navbar(),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 40.0),
-                child: LandingPage(),
-              )
-            ],
-          ),
+        ChangeNotifierProvider.value(
+          value: Cart(),
         ),
+        ChangeNotifierProvider.value(
+          value: Orders(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'MyShop',
+        theme: ThemeData(
+          primarySwatch: Colors.purple,
+          accentColor: Colors.deepOrange,
+          fontFamily: 'Montserrat',
+        ),
+        home: ProductOverviewScreen(),
+        routes: {
+          ProductOverviewScreen.routeName: (ctx) => ProductOverviewScreen(),
+          ProductDetailScreen.routeName: (ctx) => ProductDetailScreen(),
+          CartScreen.routeName: (ctx) => CartScreen(),
+          OrdersScreen.routeName: (ctx) => OrdersScreen(),
+          AdminScreen.routeName: (ctx) => AdminScreen(),
+          EditProductScreen.routeName: (ctx) => EditProductScreen(),
+        },
       ),
     );
   }
