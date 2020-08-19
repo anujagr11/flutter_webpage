@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Product with ChangeNotifier {
   final String id;
@@ -20,5 +22,14 @@ class Product with ChangeNotifier {
   void toggleFavoriteStatus() {
     isFavorite = !isFavorite;
     notifyListeners();
+    final url = 'https://dailomart.firebaseio.com/products/$id.json';
+    http.patch(
+      url,
+      body: json.encode(
+        {
+          'isFavorite': isFavorite,
+        },
+      ),
+    );
   }
 }

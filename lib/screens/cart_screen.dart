@@ -15,6 +15,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<Cart>(context);
+    var _isLoading = false;
     return Scaffold(
       body: Card(
         margin: EdgeInsets.all(15),
@@ -40,14 +41,25 @@ class _CartScreenState extends State<CartScreen> {
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               FlatButton(
-                onPressed: () {
-                  Provider.of<Orders>(context, listen: false).addOrder(
-                    cart.items.values.toList(),
-                    cart.totalAmount,
-                  );
-                  cart.clear();
-                },
-                child: Text('ORDER NOW'),
+                onPressed: (cart.totalAmount <= 0 || _isLoading)
+                    ? null
+                    : () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await Provider.of<Orders>(context, listen: false)
+                            .addOrder(
+                          cart.items.values.toList(),
+                          cart.totalAmount,
+                        );
+                        setState(() {
+                          _isLoading = false;
+                        });
+                        cart.clear();
+                      },
+                child: _isLoading
+                    ? CircularProgressIndicator()
+                    : Text('ORDER NOW'),
                 textColor: Theme.of(context).primaryColor,
               ),
               SizedBox(height: 20),
